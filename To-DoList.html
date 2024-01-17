@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="./To-DoList.css">
+    <script>
+       
+    document.addEventListener('DOMContentLoaded', () => {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks.forEach(task => addTaskToDOM(task));
+});
+   let tasks = getStoredTasks();
+function addTask() {
+    const newTaskInput = document.getElementById('new-task');
+    const taskText = newTaskInput.value.trim();
+
+    if (taskText !== '') {
+        const newTask = { id: Date.now(), text: taskText, completed: false };
+        addTaskToDOM(newTask);
+
+        // Save tasks to local storage
+        saveTasksToLocalStorage();
+        updateTaskList(taskListContainer);
+        newTaskInput.value = '';
+    }
+}
+
+function addTaskToDOM(task) {
+    const taskList = document.getElementById('task-list');
+
+    const taskElement = document.createElement('div');
+    taskElement.classList.add('task');
+    taskElement.dataset.taskId = task.id;
+
+    const taskTextElement = document.createElement('span');
+    taskTextElement.textContent = task.text;
+
+    const taskButtonsElement = document.createElement('div');
+    
+    if(!task.editing){
+    const completeButton = document.createElement('button');
+    completeButton.textContent = task.completed ? 'Uncomplete' : 'Complete';
+    completeButton.addEventListener('click', () => {
+        task.completed = !task.completed;
+        saveTasksToLocalStorage();
+        updateTaskUI(taskElement, task);
+        if(task.completed){
+            displayCompletionMessage(task.text);
+        }
+    });
+
+const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.addEventListener('click', () => {
+        const newText = prompt('Edit task:', task.text);
+        if (newText !== null) {
+            task.text = newText.trim();
+            saveTasksToLocalStorage();
+            taskTextElement.textContent = task.text;
+        }
+});
+
+const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', () => {
+        taskList.removeChild(taskElement);
+        const index = tasks.findIndex(t => t.id === task.id);
+        tasks.splice(index, 1);
+        saveTasksToLocalStorage();
+});
+
+    taskButtonsElement.appendChild(completeButton);
+    taskButtonsElement.appendChild(editButton);
+    taskButtonsElement.appendChild(deleteButton);
+    }else{
+        const editInput = document.createElement('input');
+        editInput.type = 'text';
+        editInput.value = task.text;
+
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.addEventListener('click', () => {
+            task.text = editInput.value.trim();
+            task.editing = false;
+            saveTasksToLocalStorage();
+            addTaskToDOM(task); // Re-render to show the updated text
+        });
+const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.addEventListener('click', () => {
+            task.editing = false;
+            saveTasksToLocalStorage();
+            addTaskToDOM(task); // Re-render to show the original text
+        });
+        taskButtonsElement.appendChild(editInput);
+        taskButtonsElement.appendChild(saveButton);
+        taskButtonsElement.appendChild(cancelButton);
+    }
+    taskElement.appendChild(taskTextElement);
+    taskElement.appendChild(taskButtonsElement);
+
+    updateTaskUI(taskElement, task);
+    taskList.appendChild(taskElement);
+}
+
+function updateTaskUI(taskElement, task) {
+    taskElement.style.textDecoration = task.completed ? 'line-through' : 'none';
+}
+function displayCompletionMessage(taskText) {
+    const completionMessage = document.createElement('div');
+    completionMessage.classList.add('completion-message');
+    completionMessage.textContent = ` "${taskText}" has been completed!`;
+
+    document.body.appendChild(completionMessage);
+
+    // Remove the completion message after a few seconds
+    setTimeout(() => {
+        document.body.removeChild(completionMessage);
+    }, 3000);
+}
+function saveTasksToLocalStorage() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+function getStoredTasks() {
+    const storedTasks = localStorage.getItem('tasks');
+    return storedTasks ? JSON.parse(storedTasks) : [];
+}
+
+    </script>
+</head>
+<body>
+    <div class="Nav">
+        <ul>
+            <li><a href="http://127.0.0.1:5500/signup.html">Sign Up</a></li>
+            <li><a href="http://127.0.0.1:5500/Login.html">Login In</a></li>
+        </ul>
+    </div>
+    
+    <div class="container">
+        <div id="task-list">
+           <h1>To-Do List</h1>
+        </div>
+        <div id="task-input">
+            <input type="text" id="new-task" placeholder="Add a new task...">
+            <button onclick="addTask()">Add</button>
+        </div>
+    </div>
+</body>
+</html>

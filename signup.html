@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Sign Up Form</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+img{
+    height: 60px;
+    width:60px ;
+    cursor: pointer;
+}
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+}
+
+input {
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+    </style>
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", function(event) {
+    
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match");
+        event.preventDefault();
+    }else {
+        
+        document.getElementById("successMessage").style.display = "block";
+        setTimeout(function() {
+            window.location.href = "http://127.0.0.1:5500/To-DoList.html"; 
+        }, 2000); 
+        event.preventDefault(); 
+    }
+});
+    </script>
+
+</head>
+<body>
+    <div class="container">
+        
+        <form id="signupForm">
+            <h2>Sign Up</h2>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+            <button type="submit">Sign Up</button>
+            <a href="http://127.0.0.1:5500/To-DoList.html">
+            <img src="./arrow_60mm_angled_ss_web-1-1-1-1-1.jpg" alt=""></a>
+        </form>
+        <div id="successMessage" style="display: none; color: green; margin-top: 10px;">
+            Successfully signed up! You can now 
+        </div>
+    </div>
+   
+
+
+</body>
+</html>
